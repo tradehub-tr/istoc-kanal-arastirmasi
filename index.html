@@ -237,13 +237,8 @@ footer p{max-width:75ch;margin-bottom:.75rem}
 	<div class="wrap">
 		<p class="eyebrow">iStoc · Entegrasyon tahtası · Ahmet'in başlıkları · 5 Kasım 2026</p>
 		<h1>B2B, B2C, Google Merchant Center, Meta Commerce ve Conversions API: neler olmalı?</h1>
-		<p class="lede">Tahtada adıma yazılan dört başlık araştırıldı; burada yalnız henüz yapılmamış işler var. <b>Yapılmasını istediğin maddenin kutusunu işaretle</b>, gerekirse not düş. Bitince altta <b>Çıktı al</b> ile seçtiklerini kopyala ya da indir.</p>
+		<p class="lede">Tahtada adıma yazılan dört başlık araştırıldı; burada yalnız henüz yapılmamış işler var. <b>Yapılmasını istediğin maddenin kutusunu işaretle</b>. Bitince altta <b>Çıktı al</b> ile seçtiklerini kopyala ya da indir.</p>
 		<div class="stats" id="stats"></div>
-		<div class="how" id="ortakOzet" hidden></div>
-		<div class="how">
-			<p><b>Nasıl kullanılır:</b> yapılmasını istediğin maddenin kutusunu işaretle. “Seçim” süzgeciyle yalnız seçtiklerini görebilirsin.</p>
-			<p><b>Kayıt:</b> seçimler bu tarayıcıda saklanır; sayfayı kapatıp açınca kaldığın yerden devam edersin.</p>
-		</div>
 	</div>
 </header>
 
@@ -270,10 +265,7 @@ footer p{max-width:75ch;margin-bottom:.75rem}
 
 <main id="main" class="wrap" tabindex="-1"></main>
 
-<footer class="wrap">
-	<p><b>Kaynak notu.</b> “Kaynak” bağlantıları ilgili kurumun veya firmanın kendi sayfasına açılır; içerik 5 Kasım 2026'da okundu, firmalar ve mevzuat habersiz değişebilir, sözleşme ve geliştirme öncesi teyit edilmeli. Hukuki maddeler bilgi amaçlıdır, avukat görüşünün yerine geçmez.</p>
-	<p><b>Süre tahminleri</b> tek geliştiricinin çalışma günüdür; karar, test ve onay süreleri dahil değildir. “Şu an bizde” bölümü aynı gün kendi kodumuz taranarak çıkarıldı.</p>
-</footer>
+<footer class="wrap"><p>Hukuki konular bilgi amaçlıdır, avukat görüşünün yerine geçmez. Bilgiler 5 Kasım 2026 tarihlidir; firmalar ve mevzuat değişebilir.</p></footer>
 
 <div class="bar" role="region" aria-label="Seçim özeti">
 	<div class="wrap">
@@ -354,7 +346,7 @@ tabs.addEventListener("click", e => { const b = e.target.closest(".tab"); if (!b
 
 /* istatistik */
 const st = $("#stats");
-[[ITEMS.length, "seçenek"], [DATA.length, "başlık"], [ITEMS.filter(m => m.onem === "zorunlu").length, "zorunlu madde"], [ITEMS.filter(m => m.k).length, "kaynaklı madde"]].forEach(([n, c]) => {
+[[ITEMS.length, "seçenek"], [DATA.length, "başlık"], [ITEMS.filter(m => m.onem === "zorunlu").length, "zorunlu madde"]].forEach(([n, c]) => {
 	const d = el("div", "stat"); d.append(el("b", null, String(n)), el("span", null, c)); st.append(d);
 });
 
@@ -520,14 +512,6 @@ $("#resetBtn").addEventListener("click", () => {
 	if (b.dataset.arm !== "1") { b.dataset.arm = "1"; b.textContent = "Emin misin? Tekrar bas"; setTimeout(() => { b.dataset.arm = ""; b.textContent = "Sıfırla"; }, 3000); return; }
 	state = {}; save(); b.dataset.arm = ""; b.textContent = "Sıfırla"; sync(); apply();
 });
-
-if (ORTAK) {
-	const oz = $("#ortakOzet"); oz.hidden = false;
-	const s = ORTAK.ozet || {};
-	const p1 = el("p"); p1.innerHTML = "<b>Bu sayfada yalnız senin seçeceğin maddeler var.</b> Gereksizler, başkasına ait olanlar kodda tamamen ya da kısmen yapılmış olanlar (Yapıldı sekmesi) çıkarıldı.";
-	const p2 = el("p"); p2.textContent = "Her satırın başlığı, o işin ne olduğunu tek cümlede anlatıyor.";
-	oz.append(p1, p2);
-}
 
 /* çıktı */
 let fmt = "md";
