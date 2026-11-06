@@ -126,6 +126,21 @@ main{padding:2rem 0 9rem}
 .tag.asama{background:transparent;border-color:var(--line-strong)}
 .tag.efor{background:transparent;border-style:dashed;border-color:var(--line-strong)}
 .tag.emsal{background:transparent;border-color:transparent;color:var(--ink-2);padding-left:0}
+.list:has(.row){gap:.5rem}
+.sec:not([data-sec="done"]):not([data-sec="now"]) .sec-sum,.sec:not([data-sec="done"]):not([data-sec="now"]) .grp-note{display:none}
+.card.row{padding:0;border-left-width:1px;border-radius:.5rem;box-shadow:none;gap:0}
+.rowline{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}
+.row .pick{padding:.875rem 1rem;min-height:var(--tap)}
+.row .ct{font-size:1.0625rem;font-weight:500;line-height:1.45}
+.det{grid-column:1/-1;padding:0 1rem}
+.det>summary{position:absolute;right:1rem;top:.5rem;cursor:pointer;color:var(--accent);font-weight:700;list-style:none;min-height:var(--tap);display:flex;align-items:center;padding:0 .25rem}
+.det>summary::-webkit-details-marker{display:none}
+.det>summary::after{content:" ▾"}
+.det[open]>summary::after{content:" ▴"}
+.det[open]{padding-bottom:1rem;display:grid;gap:.75rem;border-top:1px solid var(--line);padding-top:.875rem}
+.det .bul{padding-left:1.25rem}
+.card.row{position:relative}
+.row .pick-body{padding-right:6rem}
 .pick{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.875rem;align-items:start;cursor:pointer}
 .pick input{width:1.5rem;height:1.5rem;margin:.25rem 0 0;accent-color:var(--accent);cursor:pointer}
 .pick-body{display:grid;gap:.125rem}
@@ -345,13 +360,13 @@ const st = $("#stats");
 DATA.forEach(sec => {
 	const s = el("section", "sec"); s.dataset.sec = sec.no; s.setAttribute("aria-labelledby", "h" + sec.no);
 	const head = el("div", "sec-head");
-	const h = el("h2", null, sec.no + " · " + sec.bolum); h.id = "h" + sec.no;
+	const h = el("h2", null, sec.bolum); h.id = "h" + sec.no;
 	head.append(h, el("span", "mono", sec.gruplar.reduce((a, g) => a + g.maddeler.length, 0) + " madde"));
 	s.append(head, el("p", "sec-sum", sec.ozet));
 	sec.gruplar.forEach(g => {
 		const gw = el("div", "grp"); gw.dataset.grp = g.no;
 		const gh = el("div", "grp-head");
-		gh.append(el("h3", null, g.no + " · " + g.ad));
+		gh.append(el("h3", null, g.ad));
 		const bulk = el("div", "btns");
 		[["1", "Grubu seç"], ["0", "Grubu bırak"]].forEach(([v, l]) => { const b = el("button", "mini", l); b.type = "button"; b.dataset.bulk = v; b.dataset.g = g.no; bulk.append(b); });
 		gh.append(bulk);
@@ -359,11 +374,10 @@ DATA.forEach(sec => {
 		if (g.not) gw.append(el("p", "grp-note", g.not));
 		const list = el("div", "list");
 		g.maddeler.forEach(m => {
-			const c = el("article", "card"); c.dataset.id = m.id;
+			const c = el("article", "card row"); c.dataset.id = m.id;
 			const top = el("label", "pick");
 			const cb = el("input"); cb.type = "checkbox"; cb.dataset.pick = m.id; cb.setAttribute("aria-describedby", "d" + m.id);
 			const body = el("span", "pick-body");
-			body.append(el("span", "cid", m.id));
 			const t = el("span", "ct", m.t); t.id = "t" + m.id;
 			body.append(t);
 			top.append(cb, body);
@@ -380,9 +394,13 @@ DATA.forEach(sec => {
 			if (m.kod && m.kod.durum === "kismi" && m.kod.not) { kn = el("p", "kodnot"); kn.append(el("b", null, "Kodda: "), document.createTextNode(m.kod.not)); if (m.kod.kanit && m.kod.kanit !== "-") kn.append(el("span", "mono kanit", " " + m.kod.kanit)); }
 			if (false) (m.notlar || []).forEach(x => { const n = el("p", "cnote"); n.append(el("b", null, "Düzeltme notu: "), document.createTextNode(x.neden || "")); if (x.k) { n.append(" "); const a = el("a", null, "kaynak ↗"); a.href = x.k; a.target = "_blank"; a.rel = "noopener noreferrer"; n.append(a); } c.append(n); });
 			const nw = el("div", "note-wrap");
-			const ta = el("textarea"); ta.rows = 1; ta.placeholder = "Not (isteğe bağlı)"; ta.dataset.note = m.id; ta.setAttribute("aria-label", m.id + " notu");
+			const ta = el("textarea"); ta.rows = 1; ta.placeholder = "Not (isteğe bağlı)"; ta.dataset.note = m.id; ta.setAttribute("aria-label", "Not");
 			nw.append(ta);
-			c.prepend(...[top, d, kn, tags].filter(Boolean)); c.append(nw);
+			const det = el("details", "det");
+			const sm = el("summary", null, "Ayrıntı"); sm.setAttribute("aria-label", m.t + " ayrıntısı");
+			det.append(sm, ...[d, kn, tags, nw].filter(Boolean));
+			const line = el("div", "rowline"); line.append(top, det);
+			c.append(line);
 			list.append(c);
 		});
 		gw.append(list);
@@ -415,7 +433,7 @@ if ((YAPILDI || []).length + (KISMI || []).length) {
 		const list = el("div", "list"); list.style.marginTop = ".75rem";
 		arr.forEach(y => {
 			const c = el("article", "card done" + (kis ? " part" : ""));
-			const top = el("div", "tags"); top.append(el("span", "cid", y.id + " · " + y.bolum + " · " + y.grup));
+			const top = el("div", "tags"); top.append(el("span", "cid", y.bolum + " · " + y.grup));
 			top.append(el("span", "tag " + (kis ? "kismi" : "yapildi"), kis ? "Kısmen" : "Yapıldı"));
 			c.append(top);
 			const t = el("h4", "ct", y.t); t.style.margin = "0"; c.append(t);
@@ -538,13 +556,13 @@ function build() {
 	const lab = { tut: "TUT", belki: "BELKİ", ele: "ELE" };
 	DATA.forEach(sec => {
 		const ms = list.filter(m => m.sec === sec); if (!ms.length) return;
-		L.push("## " + sec.no + " · " + sec.bolum, "");
+		L.push("## " + sec.bolum, "");
 		sec.gruplar.forEach(g => {
 			const gm = ms.filter(m => m.grp === g); if (!gm.length) return;
-			L.push("### " + g.no + " · " + g.ad, "");
+			L.push("### " + g.ad, "");
 			gm.forEach(m => {
 				const meta = [m.asama, m.onem, m.efor].filter(Boolean).join(" · ");
-				L.push("- [x] **" + m.id + " " + m.t + "**" + (meta ? " — " + meta : ""));
+				L.push("- [x] **" + m.t + "**" + (meta ? " — " + meta : ""));
 				(m.maddeler && m.maddeler.length ? m.maddeler : [strip(m.d)]).forEach(x => L.push("  - " + x));
 				if (state[m.id].n) L.push("  Not: " + state[m.id].n);
 			});
