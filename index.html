@@ -127,6 +127,8 @@ main{padding:2rem 0 9rem}
 .tag.efor{background:transparent;border-style:dashed;border-color:var(--line-strong)}
 .tag.emsal{background:transparent;border-color:transparent;color:var(--ink-2);padding-left:0}
 .list:has(.row){gap:.5rem}
+.sec:not([data-sec="done"]):not([data-sec="now"]) .grp{margin:.5rem 0 0}
+.sec:not([data-sec="done"]):not([data-sec="now"]) .sec-head{margin-bottom:1rem}
 .sec:not([data-sec="done"]):not([data-sec="now"]) .sec-sum,.sec:not([data-sec="done"]):not([data-sec="now"]) .grp-note{display:none}
 .card.row{padding:0;border-left-width:1px;border-radius:.5rem;box-shadow:none;gap:0}
 .rowline{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}
@@ -365,13 +367,6 @@ DATA.forEach(sec => {
 	s.append(head, el("p", "sec-sum", sec.ozet));
 	sec.gruplar.forEach(g => {
 		const gw = el("div", "grp"); gw.dataset.grp = g.no;
-		const gh = el("div", "grp-head");
-		gh.append(el("h3", null, g.ad));
-		const bulk = el("div", "btns");
-		[["1", "Grubu seç"], ["0", "Grubu bırak"]].forEach(([v, l]) => { const b = el("button", "mini", l); b.type = "button"; b.dataset.bulk = v; b.dataset.g = g.no; bulk.append(b); });
-		gh.append(bulk);
-		gw.append(gh);
-		if (g.not) gw.append(el("p", "grp-note", g.not));
 		const list = el("div", "list");
 		g.maddeler.forEach(m => {
 			const c = el("article", "card row"); c.dataset.id = m.id;
