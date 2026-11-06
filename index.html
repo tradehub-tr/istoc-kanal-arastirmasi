@@ -237,7 +237,7 @@ footer p{max-width:75ch;margin-bottom:.75rem}
 	<div class="wrap">
 		<p class="eyebrow">iStoc · Entegrasyon tahtası · Ahmet'in başlıkları · 5 Kasım 2026</p>
 		<h1>B2B, B2C, Google Merchant Center, Meta Commerce ve Conversions API: neler olmalı?</h1>
-		<p class="lede">Tahtada adıma yazılan dört başlık araştırıldı; burada yalnız henüz yapılmamış işler var. <b>Yapılmasını istediğin maddenin kutusunu işaretle</b>. Bitince altta <b>Çıktı al</b> ile seçtiklerini kopyala ya da indir.</p>
+		<p class="lede">Tahtada adıma yazılan dört başlık araştırıldı; burada yalnız henüz yapılmamış işler var. <b>Yapılmasını istediğin maddenin kutusunu işaretle</b>. Bitince altta <b>Çıktı al</b> ile seçtiklerini JSON olarak kopyala ya da indir.</p>
 		<div class="stats" id="stats"></div>
 	</div>
 </header>
@@ -280,11 +280,7 @@ footer p{max-width:75ch;margin-bottom:.75rem}
 <div class="scrim" id="scrim" hidden>
 	<div class="panel" role="dialog" aria-modal="true" aria-labelledby="pTitle">
 		<div class="phead">
-			<h2 id="pTitle">Seçimlerin</h2>
-			<div class="fmt" role="group" aria-label="Biçim">
-				<button class="btn" type="button" data-fmt="md" aria-pressed="true">Markdown</button>
-				<button class="btn" type="button" data-fmt="json" aria-pressed="false">JSON</button>
-			</div>
+			<h2 id="pTitle">Seçtiklerin · JSON</h2>
 		</div>
 		<pre id="out" tabindex="0"></pre>
 		<div class="pfoot">
@@ -514,7 +510,7 @@ $("#resetBtn").addEventListener("click", () => {
 });
 
 /* çıktı */
-let fmt = "md";
+let fmt = "json";
 function picked() {
 	return ITEMS.filter(m => (state[m.id] || {}).s);
 }
@@ -525,7 +521,7 @@ function build() {
 			belge: "iStoc · B2B / B2C / Google Merchant Center / Meta Commerce + CAPI araştırması",
 			sahip: "Ahmet", tarih: "2026-11-05", olusturuldu: new Date().toISOString(),
 			ozet: { secilen: list.length, toplam: ITEMS.length },
-			maddeler: list.map(m => ({ id: m.id, baslik_alani: m.sec.bolum, grup: m.grp.ad, baslik: m.t, aciklama: m.maddeler && m.maddeler.length ? m.maddeler : strip(m.d), not: state[m.id].n || null, asama: m.asama || null, onem: m.onem || null, efor: m.efor || null, emsal: m.emsal || null }))
+			maddeler: list.map(m => ({ id: m.id, baslik_alani: m.sec.bolum, grup: m.grp.ad, baslik: m.t, aciklama: m.maddeler && m.maddeler.length ? m.maddeler : strip(m.d), asama: m.asama || null, onem: m.onem || null, efor: m.efor || null, emsal: m.emsal || null }))
 		}, null, 2);
 	}
 	const L = ["# iStoc · Ahmet'in başlıkları — seçimler", "", "Tarih: 2026-11-05 · Oluşturuldu: " + new Date().toLocaleString("tr-TR"), ""];
@@ -545,10 +541,9 @@ function build() {
 	});
 	return L.join("\n");
 }
-function render() { $("#out").textContent = build(); document.querySelectorAll("[data-fmt]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.fmt === fmt))); }
+function render() { $("#out").textContent = build(); }
 const scrim = $("#scrim");
 $("#outBtn").addEventListener("click", () => { render(); scrim.hidden = false; $("#closeBtn").focus(); });
-document.querySelectorAll("[data-fmt]").forEach(b => b.addEventListener("click", () => { fmt = b.dataset.fmt; render(); }));
 function close() { scrim.hidden = true; $("#outBtn").focus(); }
 $("#closeBtn").addEventListener("click", close);
 scrim.addEventListener("click", e => { if (e.target === scrim) close(); });
