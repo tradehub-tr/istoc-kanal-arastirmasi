@@ -140,7 +140,7 @@ main{padding:2rem 0 9rem}
 .det[open]{padding-bottom:1rem;display:grid;gap:.75rem;border-top:1px solid var(--line);padding-top:.875rem}
 .det .bul{padding-left:1.25rem}
 .card.row{position:relative}
-.row .pick-body{padding-right:6rem}
+.row .pick-body{padding-right:0}
 .pick{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.875rem;align-items:start;cursor:pointer}
 .pick input{width:1.5rem;height:1.5rem;margin:.25rem 0 0;accent-color:var(--accent);cursor:pointer}
 .pick-body{display:grid;gap:.125rem}
@@ -239,7 +239,7 @@ footer p{max-width:75ch;margin-bottom:.75rem}
 		<div class="stats" id="stats"></div>
 		<div class="how" id="ortakOzet" hidden></div>
 		<div class="how">
-			<p><b>Nasıl kullanılır:</b> üstten bir başlık seç, istersen “Ne zaman” ve “Önem” ile daralt. Kutuyu işaretlediğin madde seçilmiş sayılır; “Seçim” süzgeciyle yalnız seçtiklerini görebilirsin.</p>
+			<p><b>Nasıl kullanılır:</b> yapılmasını istediğin maddenin kutusunu işaretle. “Seçim” süzgeciyle yalnız seçtiklerini görebilirsin.</p>
 			<p><b>Kayıt:</b> seçimler bu tarayıcıda saklanır; sayfayı kapatıp açınca kaldığın yerden devam edersin.</p>
 		</div>
 	</div>
@@ -396,10 +396,7 @@ DATA.forEach(sec => {
 			const nw = el("div", "note-wrap");
 			const ta = el("textarea"); ta.rows = 1; ta.placeholder = "Not (isteğe bağlı)"; ta.dataset.note = m.id; ta.setAttribute("aria-label", "Not");
 			nw.append(ta);
-			const det = el("details", "det");
-			const sm = el("summary", null, "Ayrıntı"); sm.setAttribute("aria-label", m.t + " ayrıntısı");
-			det.append(sm, ...[d, kn, tags, nw].filter(Boolean));
-			const line = el("div", "rowline"); line.append(top, det);
+			const line = el("div", "rowline"); line.append(top);
 			c.append(line);
 			list.append(c);
 		});
@@ -533,7 +530,7 @@ if (ORTAK) {
 	const oz = $("#ortakOzet"); oz.hidden = false;
 	const s = ORTAK.ozet || {};
 	const p1 = el("p"); p1.innerHTML = "<b>Bu sayfada yalnız senin seçeceğin maddeler var.</b> Gereksizler, başkasına ait olanlar kodda tamamen ya da kısmen yapılmış olanlar (Yapıldı sekmesi) çıkarıldı.";
-	const p2 = el("p"); p2.textContent = "Her maddede ne yapılacağı ve neden önemli olduğu madde madde yazıyor.";
+	const p2 = el("p"); p2.textContent = "Her satırın başlığı, o işin ne olduğunu tek cümlede anlatıyor.";
 	oz.append(p1, p2);
 }
 
@@ -562,9 +559,7 @@ function build() {
 			L.push("### " + g.ad, "");
 			gm.forEach(m => {
 				const meta = [m.asama, m.onem, m.efor].filter(Boolean).join(" · ");
-				L.push("- [x] **" + m.t + "**" + (meta ? " — " + meta : ""));
-				(m.maddeler && m.maddeler.length ? m.maddeler : [strip(m.d)]).forEach(x => L.push("  - " + x));
-				if (state[m.id].n) L.push("  Not: " + state[m.id].n);
+				L.push("- [x] " + m.t);
 			});
 			L.push("");
 		});
